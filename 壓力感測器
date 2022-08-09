@@ -1,0 +1,57 @@
+from re import I
+import numpy as np
+import matplotlib as mpl
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+import serial
+import platform
+
+serialPort = "COM4"
+serialRate = 115200
+
+SerialIn = serial.Serial(serialPort, serialRate)
+# print(SerialIn)
+plt.ion()
+fig = plt.figure()
+
+
+i = 0
+x = []
+y = []
+yp = []
+SerialIn.close()
+SerialIn.open()
+
+while 1:
+    str_raw = SerialIn.readline()
+    str = str_raw.decode()
+    # print(str)
+    strint = int(str)
+
+    y.append(strint)
+    yy = np.array(y)
+
+    x.append(i)
+    xp = np.array(x)
+    print(yy[i])
+    plt.plot(xp[-50:], yy[-50:], c='r',
+             ls='-', marker='o', mec='b', mfc='w')
+
+    i += 1
+
+    plt.grid(True, linestyle='--', alpha=0.5)
+    plt.axhline(900, color='g')
+    plt.ylim(0, 1023)
+    plt.show()
+    plt.pause(0.01)
+    plt.clf()
+    if strint > 900:
+        plt.plot(xp[-50:], yy[-50:], c='r',
+                 ls='-', marker='o', mec='b', mfc='w')
+        plt.grid(True, linestyle='--', alpha=0.5)
+        plt.axhline(900, color='g')
+        plt.ylim(0, 1023)
+        plt.show()
+        plt.pause(5)
+
+        break
